@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <input type="text" class="form-control" name="sehir" id="sehir" placeholder="Şehir Yazınız">
+  <button class="btn btn-outline-primary" onclick="sehirbul()">Ara</button>
+  <div id="info" class="text-center">
+
+  </div>
+  <script>
+    function sehirbul() {
+      var sehir = document.getElementById("sehir").value;
+      var data = new FormData();
+      var xhr = new XMLHttpRequest();
+      xhr.withCredentials = true;
+
+      xhr.addEventListener("readystatechange", function () {
+        if (this.readyState === 4) {
+          text = ''
+          veri = JSON.parse(this.responseText)
+          veri["data"].forEach(element => {
+            text += `
+            <div class="card">
+      <div class="card-header">
+        <h1 class="display-4">${element["EczaneAdi"]}</h1>
+      </div>
+      <div class="card-body">
+        <a href="tel:" class="text-primary">Telefon Numarası: ${element["Telefon"]}</a>
+        <br>
+        <button class="btn btn-warning btn-lg">
+          ${element["Sehir"]}/${element["ilce"]}
+          </button>
+          
+      
+    <br>
+    <h3>Adres:${element["Adresi"]}</h3>
+<button class="btn btn-success">
+  <a href="https://maps.google.com/?q=${element["latitude"]},${element["longitude"]}&ll=${element["latitude"]},${element["longitude"]}&z=8">Konuma Git</a>
+</button>
+</div>
+    </div>`
+            console.log(element)
+            document.getElementById("info").innerHTML = text
+          })
+          // console.log(veri["data"][0]["EczaneAdi"])
+          // console.log(this.responseText);
+        }
+      });
+
+      xhr.open("GET", `https://www.nosyapi.com/apiv2/pharmacy?city=${sehir}`);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.setRequestHeader("Authorization", "TOKEN");
+
+      xhr.send(data);
+    } 
+  </script>
+
+</body>
+
+</html>
